@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIAC 2.1.1</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #008000;
+            color: white;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .sidebar h2 {
+            margin: 0;
+            font-size: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid white;
+        }
+        .sidebar button {
+            background: none;
+            color: white;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 8px 0;
+            border-bottom: 1px solid white;
+        }
+        .sidebar button:hover {
+            text-decoration: underline;
+        }
+        .sidebar .sub-buttons {
+            display: none;
+            padding-left: 20px;
+            gap: 5px;
+        }
+        .sidebar .sub-buttons button {
+            font-size: 14px;
+        }
+        .sidebar button.active + .sub-buttons {
+            display: flex;
+            flex-direction: column;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: rgb(218, 215, 228);
+            position: relative;
+            background-image: url('RIAC.png'); /* Set the image */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+          
+        }
+
+        .content h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        .content .company-info {
+            color: #555;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .logout-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .logout-button:hover {
+            background-color: #d32f2f;
+        }
+        .watermark {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 12px;
+            color: rgba(0, 0, 0, 0.2);
+        }
+
+        /* Styling for tables */
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background-color: #333; /* Dark background */
+            color: white; /* Bright text */
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #444;
+        }
+
+        /* Button Styling for Audit Trails - Vertical Display */
+        .sidebar .sub-buttons {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar .sub-buttons button {
+            margin-bottom: 10px; /* Space out the buttons */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2>RIAC 2.1.1</h2>
+            <button onclick="showContent('home')">Home</button>
+            <button onclick="showContent('configuration')">Configuration</button>
+            <button onclick="showContent('data-log')">Data Log Analysis</button>
+            <button class="audit-trails-btn" onclick="toggleSubMenu(this)">Audit Trails</button>
+            <div class="sub-buttons">
+                <button onclick="showContent('alarm-audit')">Alarm Audit Trail</button>
+                <button onclick="showContent('equipment-audit')">Equipment Audit Trail</button>
+                <button onclick="showContent('user-audit')">User Audit Trail</button>
+                <button onclick="showContent('email-audit')">Email Audit Trail</button>
+                <button onclick="showContent('sms-audit')">SMS Audit Trail</button>
+                <button onclick="showContent('review-approved')">Review and Approved</button>
+            </div>
+            <button onclick="showContent('archive-analysis')">Archive Analysis</button>
+            <button onclick="showContent('company-info')">Company Information</button>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <button class="logout-button" onclick="logout()">Logout</button>
+            <div id="display-content">
+                <h1>Welcome to RIAC 2.1.1!</h1>
+                <p>Please select an option from the left menu to begin.</p>
+            </div>
+            <div class="watermark">Ran Industrial Automation Pvt Ltd</div>
+        </div>
+    </div>
+
+    <script src="fetchdata.js"></script>
+    <script>
+      function toggleSubMenu(button) {
+    const subMenu = button.nextElementSibling;
+    subMenu.style.display = subMenu.style.display === 'none' || subMenu.style.display === '' ? 'flex' : 'none';
+}
+
+function showContent(contentId) {
+    const displayContent = document.getElementById('display-content');
+    const content = document.querySelector('.content');
+    
+    // Clear existing content
+    displayContent.innerHTML = '';
+    
+    // Reset background image
+    content.style.backgroundImage = '';
+    
+    switch (contentId) {
+        case 'user-audit':
+            fetchTableData('LoginActivity1');
+            displayContent.innerHTML = `<h1>USER AUDIT TRAIL</h1>`;
+            break;
+        case 'equipment-audit':
+            fetchTableData('System_Alarms');
+            displayContent.innerHTML = `<h1>EQUIPMENT AUDIT TRAIL</h1>`;
+            break;
+        case 'alarm-audit':
+            fetchTableData('Alarms');
+            displayContent.innerHTML = `<h1>ALARM AUDIT TRAIL</h1>`;
+            break;
+            case 'data-log':
+            fetchTableData('Sensors');
+            displayContent.innerHTML = `<h1>Sensor AUDIT TRAIL</h1>`;
+            break;
+        case 'company-info':
+            displayContent.innerHTML = `
+                <h1>COMPANY INFORMATION</h1>
+                <p><strong>Company Name:</strong> Ran Industrial Automation & Controls Private Limited</p>
+                <p><strong>Address:</strong> Plot No. 25, Road No.-5, Aleap Industrial Estate, Kukatpally, Near Pragathi Nagar, Hyderabad-500090, Telangana, India</p>
+                <p><strong>Contact:</strong> G. Ranjith Kumar (Managing Director)</p>
+                <p><strong>Mobile:</strong> <a href="tel:+91XXXXXXXXXX">+91XXXXXXXXXX</a></p>
+                <p>
+                    <button onclick="showMap()">Get Directions</button>
+                    <button onclick="sendEmail()">Send Email</button>
+                    <button onclick="sendSMS()">Send SMS</button>
+                </p>
+            `;
+            break;
+        case 'home':
+            displayContent.innerHTML = `<h1>HOME</h1>`;
+            content.style.backgroundImage = "url('Home.png')";
+            content.style.backgroundSize = "cover";
+            content.style.backgroundPosition = "center";
+            break;
+        case 'configuration':
+            displayContent.innerHTML = `<h1>CONFIGURATION</h1>`;
+            content.style.backgroundImage = "url('PLC.png')";
+            content.style.backgroundSize = "cover";
+            content.style.backgroundPosition = "center";
+            break;
+        default:
+            displayContent.innerHTML = `<h1>${contentId.replace(/-/g, ' ').toUpperCase()}</h1>`;
+    }
+}
+
+function showMap() {
+    const displayContent = document.getElementById('display-content');
+    displayContent.innerHTML = `
+        <h1>GET DIRECTIONS</h1>
+        <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.3542564773025!2d78.38638027409233!3d17.510558788293396!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb93f12345678:0x87654321abcdef0!2sRan%20Industrial%20Automation%20Pvt%20Ltd!5e0!3m2!1sen!2sin!4v1668423602407!5m2!1sen!2sin"
+            width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy">
+        </iframe>
+    `;
+}
+
+function sendEmail() {
+    window.location.href = "mailto:info@riac.com";
+}
+
+function sendSMS() {
+    window.location.href = "sms:+91XXXXXXXXXX";
+}
+
+function logout() {
+    // Redirect to index.html
+    window.location.href = "index.html";
+}
+
+    </script>
+</body>
+</html>

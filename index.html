@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIAC 2.1 - Login</title>
+    <style>
+        body {
+            background-color: #008000;
+            background-image: url('./4893694.webp'); /* Background image */
+            background-size: cover;
+            background-repeat: no-repeat;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1); /* Transparent background */
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 5.0);
+            padding: 20px 30px;
+            gap: 20px; /* Space between the image and form */
+            padding-right: 90px;
+        }
+
+        .login-icon {
+            width: 100px;
+            height: auto;
+            position: fixed;
+        }
+
+        .login-box {
+            text-align: left;
+            color: white;
+            padding-left: 250px;
+            margin-top: 100px;
+
+        }
+ 
+
+        .login-box h3 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .login-box input[type="text"],
+        .login-box input[type="password"] {
+            width: 50%;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: black;
+        }
+
+        .login-box button {
+            width: 20%;
+            padding: 10px;
+            margin-top: 10px;
+            background: #ffcc00; /* Bright login button */
+            color: black;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-box button:hover {
+            background: #ff9900; /* Darker hover color */
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: white;
+            text-align: center;
+        }
+
+        marquee {
+            color: rgb(251, 255, 0);
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <center>
+            <marquee direction="left-right" scrollamount="4">
+                Ran Industrial Automation PVT LTD!
+            </marquee>
+        </center>
+
+        <div class="login-container">
+            <!-- Left side: Image -->
+   
+
+            <!-- Right side: Login form -->
+            <div class="login-box">
+                <h3>Login</h3>
+                <form id="loginForm">
+                    <input type="text" id="username" placeholder="Login Name" required />
+                    <input type="password" id="password" placeholder="Password" required /><br>
+
+                    <button type="submit">Login</button>
+                </form>
+                <p id="error" style="color: red;"></p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>VERSION: 2.1.1</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorElement = document.getElementById('error');
+
+            errorElement.textContent = '';
+
+            try {
+                const response = await fetch('http://localhost:5000/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    if (result.success) {
+                        window.location.href = 'Sucess.html';
+                    } else {
+                        errorElement.textContent = result.message || 'Invalid credentials. Please try again.';
+                    }
+                } else {
+                    errorElement.textContent = 'An error occurred. Please try again later.';
+                }
+            } catch (error) {
+                console.error('Error during login:', error);
+                errorElement.textContent = 'Network error: Could not reach the server. Please check your internet connection and try again later.';
+            }
+        });
+    </script>
+</body>
+</html>
